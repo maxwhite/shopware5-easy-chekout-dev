@@ -1,6 +1,6 @@
 <?php
 
-namespace NetsCheckout\Components\Api;
+namespace NetsCheckoutPayment\Components\Api;
 
 use NetsCheckout\Components\Api\Exception\EasyApiException;
 

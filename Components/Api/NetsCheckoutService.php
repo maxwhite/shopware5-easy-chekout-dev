@@ -1,7 +1,7 @@
 <?php
 
 
-namespace NetsCheckout\Components\Api;
+namespace NetsCheckoutPayment\Components\Api;
 
 
 class NetsCheckoutService

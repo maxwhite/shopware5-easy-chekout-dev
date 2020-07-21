@@ -1,6 +1,6 @@
 <?php
 
-namespace NetsCheckout;
+namespace NetsCheckoutPayment;
 
 use Shopware\Components\Plugin;
 use Shopware\Components\Plugin\Context\InstallContext;
@@ -8,7 +8,7 @@ use Shopware\Components\Plugin\Context\ActivateContext;
 use Shopware\Components\Plugin\Context\DeactivateContext;
 use Shopware\Components\Plugin\Context\UninstallContext;
 
-class NetsCheckout extends Plugin
+class NetsCheckoutPayment extends Plugin
 {
         public function install(InstallContext $context)
         {
@@ -16,7 +16,7 @@ class NetsCheckout extends Plugin
             $installer = $this->container->get('shopware.plugin_payment_installer');
 
             $options = [
-                'name' => 'nets_checkout',
+                'name' => 'nets_checkout_payment',
                 'description' => 'Nets Checkout',
                 'action' => 'NetsCheckout',
                 'active' => 0,

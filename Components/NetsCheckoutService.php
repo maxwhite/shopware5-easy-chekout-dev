@@ -1,6 +1,6 @@
 <?php
 
-namespace NetsCheckout\Components;
+namespace NetsCheckoutPayment\Components;
 
 
 use Shopware\Models\Customer\Customer;
