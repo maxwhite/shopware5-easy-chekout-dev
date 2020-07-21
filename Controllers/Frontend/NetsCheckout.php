@@ -24,12 +24,22 @@ class Shopware_Controllers_Frontend_NetsCheckout extends Shopware_Controllers_Fr
 
     public function indexAction() {
 
-        exit;
+
+
+        /** @var  $service NetsCheckoutPayment\Components\NetsCheckoutService **/
+        $service = $this->service;
+
         try {
-            $payment = $this->service->createPayment($this->session->offsetGet('sUserId'), $this->getBasket());
+            $payment = $service->createPayment($this->session->offsetGet('sUserId'), $this->getBasket());
             $result = json_decode( $payment, true );
-            //var_dump( $payment );
-            return $this->redirect( $result['hostedPaymentPageUrl'] );
+
+            $language = Shopware()->Config()->getByNamespace('NetsCheckoutPayment', 'language');
+
+            echo $language;
+
+            exit;
+
+            return $this->redirect( $result['hostedPaymentPageUrl'] . '&language=' . $language );
 
         }  catch (EasyApiException $e) {
 

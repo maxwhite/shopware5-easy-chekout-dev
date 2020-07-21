@@ -17,5 +17,32 @@
             <label lang="en">Test Mode</label>
             <value>0</value>
         </element>
+        <element type="select" scope="locale">
+            <name>language</name>
+            <label lang="de">Language</label>
+            <label lang="en">Language</label>
+            <store>
+                <option>
+                    <value>en-US</value>
+                    <label>English</label>
+                </option>
+                <option>
+                    <value>da-DK</value>
+                    <label>Danish</label>
+                </option>
+                <option>
+                    <value>sv-SE</value>
+                    <label>Swedish</label>
+                </option>
+                <option>
+                    <value>nb-NO</value>
+                    <label>Norwegian</label>
+                </option>
+                <option>
+                    <value>de-DE</value>
+                    <label>German</label>
+                </option>
+            </store>
+        </element>
     </elements>
 </config>

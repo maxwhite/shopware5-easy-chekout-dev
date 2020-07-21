@@ -19,16 +19,20 @@ class NetsCheckoutService
     . 'A-Za-z0-9\!\#\$\%\(\)*\+\,\-\.\/\:\;\\=\?\@\[\]\\^\_\`\{\}\~ ]+/u';
 
 
-
     public function __construct(Api\NetsCheckoutService $checkoutService)
     {
         $this->apiService = $checkoutService;
     }
 
     public function createPayment($userId, $basket) {
-       $result = $this->collectRequestParams($userId, $basket);
-        $this->apiService->setEnv('test');
-        $this->apiService->setAuthorizationKey('test-secret-key-844664d582a8429aa149508a2e657c35');
+        $result = $this->collectRequestParams($userId, $basket);
+        $key_type = 'live_secret_key';
+        if(Shopware()->Config()->getByNamespace('NetsCheckoutPayment', 'testmode')) {
+            $this->apiService->setEnv('test');
+            $key_type = 'test_secret_key';
+        }
+        $key = Shopware()->Config()->getByNamespace('NetsCheckoutPayment', $key_type);
+        $this->apiService->setAuthorizationKey($key);
         return $this->apiService->createPayment( json_encode($result) );
     }
 
