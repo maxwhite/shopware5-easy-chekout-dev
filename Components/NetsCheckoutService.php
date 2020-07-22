@@ -33,6 +33,9 @@ class NetsCheckoutService
         }
         $key = Shopware()->Config()->getByNamespace('NetsCheckoutPayment', $key_type);
         $this->apiService->setAuthorizationKey($key);
+
+        error_log(  $key  );
+
         return $this->apiService->createPayment( json_encode($result) );
     }
 
@@ -41,17 +44,24 @@ class NetsCheckoutService
         /** @var  $customer \Shopware\Models\Customer\Customer */
         $customer = Shopware()->Models()->find(Customer::class, $userId);
 
+        $returUrl = Shopware()->Front()->Router()->assemble([
+            'controller' => 'NetsCheckout',
+            'action' => 'return',
+            'forceSecure' => true
+        ]);
+
         $data =  [
             'order' => [
                 'items' => $this->getOrderItems($basket),
                 'amount' => $this->prepareAmount($basket['sAmount']),
-                'currency' => 'SEK', //$basket['sCurrencyName'],
+                'currency' => $basket['sCurrencyName'],
                 'reference' =>  1002003,
             ]];
 
-        $data['checkout']['returnUrl'] = 'https://return-url.com';
-        $data['checkout']['integrationType'] = 'HostedPaymentPage';
+        $data['checkout']['returnUrl'] = $returUrl;
         $data['checkout']['termsUrl'] ='https://return-url.com';
+
+        $data['checkout']['integrationType'] = 'HostedPaymentPage';
         $data['checkout']['merchantHandlesConsumerData'] = true;
 
         $data['checkout']['consumer'] =

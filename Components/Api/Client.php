@@ -2,7 +2,7 @@
 
 namespace NetsCheckoutPayment\Components\Api;
 
-use NetsCheckout\Components\Api\Exception\EasyApiException;
+use NetsCheckoutPayment\Components\Api\Exception\EasyApiException;
 
 class Client
 {
@@ -42,8 +42,7 @@ class Client
                 'body' => $data];
             return $this->client->post($url, $params);
         }catch(\Exception $ex) {
-
-           throw new EasyApiException($ex->getMessage(), $ex->getCode());
+            throw new EasyApiException($ex->getMessage(), $ex->getCode());
         }
     }
 
@@ -72,8 +71,8 @@ class Client
     public function get($url, $data = array()) {
         try {
             $params = ['headers' => $this->headers];
-            return $this->client->request('GET', $url, $params);
-        }catch(\GuzzleHttp\Exception\GuzzleException $ex) {
+            return $this->client->get($url, $params);
+        }catch(\Exception $ex) {
             throw new EasyApiException($ex->getMessage(), $ex->getCode());
         }
     }
