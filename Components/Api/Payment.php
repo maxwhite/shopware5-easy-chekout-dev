@@ -35,7 +35,12 @@ class Payment
 
     public function getReservedAmount() {
         return isset($this->paymentObj->payment->summary->reservedAmount) ?
-            $this->paymentObj->payment->summary->reservedAmount : null;
+            $this->paymentObj->payment->summary->reservedAmount : 0;
+    }
+
+    public function getChargedAmount() {
+        return isset($this->paymentObj->payment->summary->chargedAmount) ?
+            $this->paymentObj->payment->summary->chargedAmount : 0;
     }
 
     public function getCheckoutUrl() {

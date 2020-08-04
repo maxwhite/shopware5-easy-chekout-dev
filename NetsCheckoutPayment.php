@@ -2,6 +2,14 @@
 
 namespace NetsCheckoutPayment;
 
+use Doctrine\ORM\Tools\SchemaTool;
+
+use NetsCheckoutPayment\Models\NetsCheckoutPayment as PaymentModel;
+
+use NetsCheckoutPayment\Models\NetsCheckoutPaymentApiOperations as OperationsModel;
+
+
+use Shopware\Components\Model\ModelManager;
 use Shopware\Components\Plugin;
 use Shopware\Components\Plugin\Context\InstallContext;
 use Shopware\Components\Plugin\Context\ActivateContext;
@@ -29,7 +37,7 @@ class NetsCheckoutPayment extends Plugin
             ];
             $installer->createOrUpdate($context->getPlugin(), $options);
 
-            $installer->createOrUpdate($context->getPlugin(), $options);
+            //$this->createTables();
         }
 
         /**
@@ -38,6 +46,7 @@ class NetsCheckoutPayment extends Plugin
         public function uninstall(UninstallContext $context)
         {
             $this->setActiveFlag($context->getPlugin()->getPayments(), false);
+
         }
 
         /**
@@ -45,6 +54,7 @@ class NetsCheckoutPayment extends Plugin
          */
         public function deactivate(DeactivateContext $context)
         {
+            $this->removeTables();
             $this->setActiveFlag($context->getPlugin()->getPayments(), false);
         }
 
@@ -53,6 +63,7 @@ class NetsCheckoutPayment extends Plugin
          */
         public function activate(ActivateContext $context)
         {
+            $this->createTables();
             $this->setActiveFlag($context->getPlugin()->getPayments(), true);
         }
 
@@ -69,5 +80,42 @@ class NetsCheckoutPayment extends Plugin
             }
             $em->flush();
         }
+
+    /**
+     * Create all tables
+     */
+    private function createTables()
+    {
+        /** @var ModelManager $entityManager */
+        $entityManager = $this->container->get('models');
+
+        $tool = new SchemaTool($entityManager);
+
+        $classMetaData = [
+            $entityManager->getClassMetadata(PaymentModel::class),
+            $entityManager->getClassMetadata(OperationsModel::class),
+
+        ];
+
+        $tool->updateSchema($classMetaData, true);
+    }
+
+    /**
+     * Remove all tables
+     */
+    private function removeTables()
+    {
+        /** @var ModelManager $entityManager */
+        $entityManager = $this->container->get('models');
+
+        $tool = new SchemaTool($entityManager);
+
+        $classMetaData = [
+            $entityManager->getClassMetadata(PaymentModel::class),
+            $entityManager->getClassMetadata(OperationsModel::class),
+        ];
+
+        $tool->dropSchema($classMetaData);
+    }
 
 }

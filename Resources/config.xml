@@ -44,5 +44,11 @@
                 </option>
             </store>
         </element>
+        <element required="true" type="boolean">
+            <name>chargenow</name>
+            <label lang="de">Autocaoture </label>
+            <label lang="en">Autocapture </label>
+            <value>0</value>
+        </element>
     </elements>
 </config>

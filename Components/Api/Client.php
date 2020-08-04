@@ -78,7 +78,13 @@ class Client
     }
 
     public function put($url, $data = array(), $payload = false) {
-        return $this->client->put($url, $data, $payload);
+        try {
+            $params = ['headers' => $this->headers,
+                'body' => $data];
+            return $this->client->put($url, $params);
+        }catch(\Exception $ex) {
+            throw new EasyApiException($ex->getMessage(), $ex->getCode());
+        }
     }
 
     public function getHttpStatus() {

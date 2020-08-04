@@ -49,8 +49,7 @@ class NetsCheckoutService
     public function createPayment(string $data) {
         $this->client->setHeader('commercePlatformTag:', 'easy_shopify_inject');
         $url = $this->getCreatePaymentUrl();
-
-        $this->client->post($url, $data);
+        //$this->client->post($url, $data);
         return $this->handleResponse($this->client->post($url, $data));
     }
 
@@ -67,18 +66,17 @@ class NetsCheckoutService
 
     public function updateReference(string $paymentId, string $data) {
         $url = $this->getUpdateReferenceUrl($paymentId);
-        $this->client->put($url, $data, true);
-        $this->handleResponse($this->client);
+        $this->handleResponse($this->client->put($url, $data, true));
     }
 
     public function chargePayment(string $paymentId, string $data) {
         $url = $this->getChargePaymentUrl($paymentId);
-        $this->handleResponse($this->client->post($url, $data));
+        return$this->handleResponse($this->client->post($url, $data));
     }
 
     public function refundPayment(string $chargeId, string $data) {
         $url = $this->getRefundPaymentUrl($chargeId);
-        $this->handleResponse($this->client->post($url, $data));
+        return $this->handleResponse($this->client->post($url, $data));
     }
 
     public function voidPayment(string $paymentId, string $data) {
@@ -89,6 +87,9 @@ class NetsCheckoutService
 
     protected function handleResponse($response) {
         $statusCode = $response->getStatusCode();
+
+        echo $statusCode;
+
         if (200 == $statusCode || 201 == $statusCode) {
             return (string)$response->getBody();
         }
