@@ -25,7 +25,19 @@ class Shopware_Controllers_Frontend_NetsCheckout extends Shopware_Controllers_Fr
 
     public function indexAction() {
 
-        $test = 1;
+        $test = 0;
+
+
+
+
+//        $payment = Shopware()->Models()->getRepository(NetsCheckoutPayment::class)->findOneBy(['orderId' => 20001]);
+//
+//        echo $payment->getId();
+//
+//        echo get_class($payment);
+//
+//        exit;
+
 
         if($test) {
             $orderId = 20040;

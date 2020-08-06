@@ -87,9 +87,6 @@ class NetsCheckoutService
 
     protected function handleResponse($response) {
         $statusCode = $response->getStatusCode();
-
-        echo $statusCode;
-
         if (200 == $statusCode || 201 == $statusCode) {
             return (string)$response->getBody();
         }

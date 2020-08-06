@@ -151,24 +151,14 @@ class NetsCheckoutService
      */
     public function chargePayment($orderId, $amount) {
 
-        try {
-
             // update captured amount in Payments models
             /** @var  $payment \NetsCheckoutPayment\Models\NetsCheckoutPayment */
 
             $payment = Shopware()->Models()->getRepository(NetsCheckoutPayment::class)->findOneBy(['orderId' => $orderId]);
-            //$payment->setAmountCaptured($payment->getAmountCaptured() + $amount);
 
             $payOperation = Shopware()->Models()->getRepository(NetsCheckoutPaymentApiOperations::class)->findAll(['orderId' => $orderId]);
 
-            //echo $payment->getAmountAuthorized(); // - $payment->getAmountCaptured();
-
-            //echo $payment->getAmountCaptured();
-
-
             if ($amount > $payment->getAmountAuthorized() - $payment->getAmountCaptured()) {
-
-               // echo 123523;
                 throw new \Exception('amount to capture must be less or equal to ');
             }
 
@@ -182,7 +172,9 @@ class NetsCheckoutService
 
             $this->apiService->setAuthorizationKey($this->getAuthorizationKey());
 
+            error_log('nearly start charging payment');
             $result = $this->apiService->chargePayment($paymentId, $data);
+            error_log(' end....');
 
 
             $payment->setAmountCaptured( $payment->getAmountCaptured() + $amount);
@@ -202,12 +194,7 @@ class NetsCheckoutService
 
             Shopware()->Models()->persist($paymentOperation);
             Shopware()->Models()->flush($paymentOperation);
-        } catch (\Exception $ex) {
 
-            echo $ex->getMessage();
-            //echo 23435;
-        }
-        exit;
     }
 
     public function refundPayment($orderId, $amount) {

@@ -13,16 +13,15 @@
             <argument type="service" id="nets_api_client"/>
         </service>
 
-
         <service id="nets_api_client"
                  class="NetsCheckoutPayment\Components\Api\Client">
         </service>
 
-        <!--<service id="nets_checkout_extend_order.subscriber.templates" class="NetsCheckoutPayment\Subscriber\Backend">
+        <service id="nets_checkout_extend_order.subscriber.templates" class="NetsCheckoutPayment\Subscriber\Backend">
             <argument type="service" id="service_container" />
             <argument>%nets_checkout_payment.plugin_dir%</argument>
             <tag name="shopware.event_subscriber"/>
-        </service> -->
+        </service>
 
     </services>
 </container>
