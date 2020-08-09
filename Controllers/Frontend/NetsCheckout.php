@@ -25,35 +25,38 @@ class Shopware_Controllers_Frontend_NetsCheckout extends Shopware_Controllers_Fr
 
     public function indexAction() {
 
-        $test = 0;
+
+        /** @var  $order Shopware\Models\Order\Order */
+        $order = Shopware()->Models()->getRepository(Order::class)->findOneBy(['id' => 56]);
+
+        /** @var  $status \Shopware\Models\Order\Status */
+        $status = $order->getPaymentStatus();
+
+
+        //$status->setId(12);
+
+        $status->setName('completely_paid');
+
+        $order->setPaymentStatus($status);
+
+
+        Shopware()->Models()->persist($order);
+        Shopware()->Models()->flush();
+
+
+        echo get_class($order);
 
 
 
 
-//        $payment = Shopware()->Models()->getRepository(NetsCheckoutPayment::class)->findOneBy(['orderId' => 20001]);
-//
-//        echo $payment->getId();
-//
-//        echo get_class($payment);
-//
-//        exit;
 
-
-        if($test) {
-            $orderId = 20040;
-            $amount = 30000;
-
-            //$this->service->chargePayment($orderId, $amount);
-
-            $this->service->refundPayment($orderId, $amount);
-
-            exit;
-        }
+        exit;
         try {
             $payment = $this->service->createPayment($this->session->offsetGet('sUserId'), $this->getBasket(), $this->session->offsetGet('sessionId'));
-            $result = json_decode( $payment, true );
+            $order = json_decode( $payment, true );
             $language = Shopware()->Config()->getByNamespace('NetsCheckoutPayment', 'language');
-            return $this->redirect( $result['hostedPaymentPageUrl'] . '&language=' . $language );
+            $this->persistBasket();
+            return $this->redirect( $order['hostedPaymentPageUrl'] . '&language=' . $language );
         }  catch (EasyApiException $e) {
 
             echo $e->getMessage();
@@ -94,6 +97,8 @@ class Shopware_Controllers_Frontend_NetsCheckout extends Shopware_Controllers_Fr
                     $paymentModel->setPaytype( $payment->getPaymentType() );
                     $paymentModel->setAmountAuthorized($payment->getReservedAmount());
                     $paymentModel->setAmountCaptured($payment->getChargedAmount());
+                    $paymentModel->setItemsJson($this->session->offsetGet('nets_items_json'));
+                    $this->session->offsetUnset('nets_items_json');
 
                     Shopware()->Models()->persist($paymentModel);
                     Shopware()->Models()->flush($paymentModel);
@@ -110,13 +115,6 @@ class Shopware_Controllers_Frontend_NetsCheckout extends Shopware_Controllers_Fr
         }
     }
 
-
-    public function testAction() {
-
-
-
-    }
-
     /**
      * @inheritDoc
      */
@@ -124,5 +122,4 @@ class Shopware_Controllers_Frontend_NetsCheckout extends Shopware_Controllers_Fr
     {
         // TODO: Implement getWhitelistedCSRFActions() method.
     }
-
 }

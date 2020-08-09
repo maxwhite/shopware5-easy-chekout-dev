@@ -15,7 +15,7 @@ Ext.define('Shopware.apps.Order.netscheckoutpayment.view.detail.OperationsTab',
         snippets: {
             title: '{s name=order/tab/title}Nets Checkout{/s}',
             captureButtonText: '{s name=order/capture_button/text}Capture{/s}',
-            cancelButtonText: '{s name=order/cancel_button/text}Cancel{/s}',
+            cancelButtonText: '{s name=order/cancel_button/text}Cancel Payment{/s}',
             refundButtonText: '{s name=order/refund_button/text}Refund{/s}',
             reloadButtonText: '{s name=order/reload_button/text}Reload{/s}',
             gridTitle: '{s name=order/grid/title}Payment History{/s}',
@@ -23,18 +23,14 @@ Ext.define('Shopware.apps.Order.netscheckoutpayment.view.detail.OperationsTab',
 
         initComponent: function() {
             var me = this;
-
             me.title = me.snippets.title;
-
             me.netsAmountAuthorized = 0;
-
             me.items = [
                 me.createForm()
             ];
-
             me.loadPayment();
-
             me.callParent(arguments);
+            me.disable();
         },
 
         createForm : function () {
@@ -43,34 +39,21 @@ Ext.define('Shopware.apps.Order.netscheckoutpayment.view.detail.OperationsTab',
         },
 
         loadPayment : function () {
-
             var me = this;
-
-            me.setLoading(true);
-            console.log('loadPaymentStart');
             var form = me.detailsContainer.getForm();
-
-           // form.findField('amountAuthorized').disabled = true;
             me.netsCheckoutPaymentStore.load({
-
                 params: {
-                    id: me.record.get('number'),
-                    type: 'user'
+                    id: me.record.get('number')
                 },
-
                 callback: function(records, operation, success) {
-
-                    form.loadRecord(records[0]);
-                    console.log(records);
-                    me.setLoading(false);
-
-                   // form.findField('amountAuthorized').disabled = false;
-
-                    console.log('disabled');
+                      if(records.length > 0) {
+                          console.log( records );
+                          form.loadRecord(records[0]);
+                          me.enable();
+                    }
                 },
                 scope: this
             });
-
         },
 
         /**
@@ -101,7 +84,7 @@ Ext.define('Shopware.apps.Order.netscheckoutpayment.view.detail.OperationsTab',
                             Ext.Msg.show({
                                 title:'Would you like to capture ?',
                                 msg: 'Amount will be captured',
-                                buttons: Ext.Msg.YESNOCANCEL,
+                                buttons: Ext.Msg.YESNO,
                                 icon: Ext.Msg.QUESTION,
                                 fn: function(btn) {
                                     if (btn === 'yes') {
@@ -135,26 +118,6 @@ Ext.define('Shopware.apps.Order.netscheckoutpayment.view.detail.OperationsTab',
                             });
                         }
                     },
-
-                    {
-                        text: me.snippets.cancelButtonText,
-                        handler: function() {
-                            /*var form = this.up('form').getForm(); // get the basic form
-                            if (form.isValid()) { // make sure the form contains valid data before submitting
-                                form.submit({
-                                    success: function(form, action) {
-                                        Ext.Msg.alert('Success', action.result.msg);
-                                    },
-                                    failure: function(form, action) {
-                                        Ext.Msg.alert('Failed', action.result.msg);
-                                    }
-                                });
-                            } else { // display error alert if the data is invalid
-                                Ext.Msg.alert('Invalid Data', 'Please correct form errors.')
-                            }
-                            */
-                        }
-                    }
                 ],
 
                 items: me.createFields()

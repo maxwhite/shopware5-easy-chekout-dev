@@ -21,11 +21,10 @@ Ext.define('Shopware.apps.Order.netscheckoutpayment.store.Payment',
 
         proxy: {
             type: 'ajax',
-            url: '{url controller="NetsCheckout" action="test"}',
+            url: '{url controller="NetsCheckout" action="getpayment"}',
             reader: {
                 type: 'json',
                 root: 'data',
-                totalProperty: 'total'
             }
         }
     });

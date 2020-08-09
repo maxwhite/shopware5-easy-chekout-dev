@@ -8,17 +8,22 @@ class Shopware_Controllers_Backend_NetsCheckout  extends Shopware_Controllers_Ba
 
     protected $model = NetsCheckoutPayment::class;
 
-    public function testAction() {
-
+    public function getpaymentAction() {
         $orderId = $this->Request()->get('id');
 
         /** @var  $payment \NetsCheckoutPayment\Models\NetsCheckoutPayment */
         $payment = Shopware()->Models()->getRepository(NetsCheckoutPayment::class)->findOneBy(['orderId' => $orderId]);
-        $params = ['data' => ['id' => $payment->getOrderId(),
-                              'orderId' => $payment->getOrderId(),
-                              'amountAuthorized' => $payment->getAmountAuthorized() - $payment->getAmountCaptured(),
-                              'amountCaptured' => $payment->getAmountCaptured(),
-                              'amountRefunded' => $payment->getAmountRefunded()]];
+
+        if($payment) {
+            $params = ['data' => ['id' => $payment->getOrderId(),
+                'orderId' => $payment->getOrderId(),
+                'amountAuthorized' => ($payment->getAmountAuthorized() - $payment->getAmountCaptured()) / 100,
+                'amountCaptured' => $payment->getAmountCaptured(),
+                'amountRefunded' => $payment->getAmountRefunded()]];
+        } else {
+            $params = ['data' => []];
+
+        }
         $this->View()->assign($params);
     }
 
@@ -30,27 +35,24 @@ class Shopware_Controllers_Backend_NetsCheckout  extends Shopware_Controllers_Ba
       /** @var $service \NetsCheckoutPayment\Components\NetsCheckoutService */
       $service = $this->get('nets_checkout.checkout_service');
 
-      $amountToCharge = (int) $this->Request()->get('amountAuthorized');
+      //$service->getOrderItemsFromPayment();
+
+
+      $amountToCharge = str_replace(',', '.', $this->Request()->get('amountAuthorized')) * 100;
+
+        error_log( gettype( $amountToCharge ) );
+
+      //exit;
 
       try {
-
-          error_log('start capturing');
-
           $service->chargePayment($orderId, $amountToCharge);
-
           $params = ["success" => true,
-              "msg" => "Consignment updated"];
+              "msg" => "success"];
 
       }catch (\Exception $ex ) {
-
-          error_log('excetption');
-
-          error_log( $ex->getMessage() );
-
           $params = ["success" => false,
-              "msg" => "Consignment updated"];
+              "msg" => "success"];
       }
-
           $this->View()->assign($params);
     }
 }

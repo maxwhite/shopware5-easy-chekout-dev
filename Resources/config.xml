@@ -50,5 +50,10 @@
             <label lang="en">Autocapture </label>
             <value>0</value>
         </element>
+        <element required="true" type="text">
+            <name>terms_and_conditions_url</name>
+            <label lang="en">Terms and conditions url</label>
+            <label lang="de">Terms and conditions url</label>
+        </element>
     </elements>
 </config>

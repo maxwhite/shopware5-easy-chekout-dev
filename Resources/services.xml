@@ -6,6 +6,7 @@
         <service id="nets_checkout.checkout_service"
                  class="NetsCheckoutPayment\Components\NetsCheckoutService">
             <argument type="service" id="nets_checkout.checkout_api_service"/>
+            <!-- <argument type="service" id="session"/> !-->
         </service>
 
         <service id="nets_checkout.checkout_api_service"

@@ -80,6 +80,13 @@ class NetsCheckoutPayment extends ModelEntity
      */
     protected $isCancelled;
 
+    /**
+     * @ORM\Column(name="items_json", type="text")
+     *
+     * @var string
+     */
+    protected $itemsJson;
+
     public function __construct()
     {
         $this->createdAt =  new DateTime();
@@ -189,6 +196,14 @@ class NetsCheckoutPayment extends ModelEntity
     public function setAmountRefunded($amount)
     {
         $this->amountRefunded = $amount;
+    }
+
+    public function setItemsJson($itemsJson) {
+        $this->itemsJson = $itemsJson;
+    }
+
+    public function getItemsJson() {
+        return $this->itemsJson;
     }
 
     public function getNetsPaymentId()

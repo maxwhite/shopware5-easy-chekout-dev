@@ -29,7 +29,7 @@ class NetsCheckoutService
         $this->setEnv(self::ENV_LIVE);
     }
 
-    public function setEnv(string $env = self::ENV_LIVE) {
+    public function setEnv( $env = self::ENV_LIVE) {
         $this->env = $env;
     }
 
@@ -37,7 +37,7 @@ class NetsCheckoutService
         return $this->env;
     }
 
-    public function setAuthorizationKey(string $key) {
+    public function setAuthorizationKey( $key) {
         $this->client->setHeader('Authorization', str_replace('-', '', trim($key)));
     }
 

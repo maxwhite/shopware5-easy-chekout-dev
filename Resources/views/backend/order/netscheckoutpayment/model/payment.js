@@ -7,22 +7,8 @@ Ext.define('Shopware.apps.Order.netscheckoutpayment.model.Payment',
         fields: [
             { name: 'id', type: 'string' },
             { name: 'orderId', type: 'string' },
-            { name: 'amountAuthorized', type: 'int'},
-            { name: 'amountCaptured', type: 'int'},
-            { name: 'amountRefunded', type: 'int'},
+            { name: 'amountAuthorized', type: 'string'},
+            { name: 'amountCaptured', type: 'string'},
+            { name: 'amountRefunded', type: 'string'},
         ],
-
-        proxy: {
-            type: 'ajax',
-
-            api: {
-                read:'{url controller="QuickPay" action="detail"}',
-            },
-
-            reader: {
-                type: 'json',
-                root: 'data',
-                messageProperty: 'message'
-            }
-        },
     });

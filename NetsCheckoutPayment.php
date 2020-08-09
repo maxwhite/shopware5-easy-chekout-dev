@@ -36,8 +36,7 @@ class NetsCheckoutPayment extends Plugin
                     . '</div>'
             ];
             $installer->createOrUpdate($context->getPlugin(), $options);
-
-            //$this->createTables();
+            $this->createTables();
         }
 
         /**
@@ -45,6 +44,7 @@ class NetsCheckoutPayment extends Plugin
          */
         public function uninstall(UninstallContext $context)
         {
+            $this->removeTables();
             $this->setActiveFlag($context->getPlugin()->getPayments(), false);
 
         }
@@ -54,7 +54,6 @@ class NetsCheckoutPayment extends Plugin
          */
         public function deactivate(DeactivateContext $context)
         {
-            $this->removeTables();
             $this->setActiveFlag($context->getPlugin()->getPayments(), false);
         }
 
@@ -63,7 +62,6 @@ class NetsCheckoutPayment extends Plugin
          */
         public function activate(ActivateContext $context)
         {
-            $this->createTables();
             $this->setActiveFlag($context->getPlugin()->getPayments(), true);
         }
 

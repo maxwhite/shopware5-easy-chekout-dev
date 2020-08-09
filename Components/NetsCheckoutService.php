@@ -2,17 +2,13 @@
 
 namespace NetsCheckoutPayment\Components;
 
-
-use NetsCheckoutPayment\Components\Api\Exception\EasyApiException;
 use NetsCheckoutPayment\Models\NetsCheckoutPayment;
 use NetsCheckoutPayment\Models\NetsCheckoutPaymentApiOperations;
-use QuickPayPayment\Models\QuickPayPayment;
 use Shopware\Models\Order\Order;
 use Shopware\Models\Customer\Customer;
 
 class NetsCheckoutService
 {
-
     /** @var Api\NetsCheckoutService  */
     private $apiService;
 
@@ -55,7 +51,7 @@ class NetsCheckoutService
             ]];
 
         $data['checkout']['returnUrl'] = $returUrl;
-        $data['checkout']['termsUrl'] ='https://return-url.com';
+        $data['checkout']['termsUrl'] =Shopware()->Config()->getByNamespace('NetsCheckoutPayment', 'terms_and_conditions_url');
 
         $data['checkout']['integrationType'] = 'HostedPaymentPage';
         $data['checkout']['merchantHandlesConsumerData'] = true;
@@ -78,6 +74,10 @@ class NetsCheckoutService
                         'url' => 'https://some-url.com',
                         'authorization' => substr(str_shuffle(MD5(microtime())), 0, 10)]
         ]];
+
+        $session = Shopware()->Container()->get('session');
+
+        $session->offsetSet('nets_items_json', json_encode($data));
 
         return $data;
     }
@@ -108,6 +108,30 @@ class NetsCheckoutService
 
         return $items;
     }
+
+    public function getOrderItemsFromPayment($requestJson) {
+         $requestArray = json_decode( $requestJson , true);
+
+//        echo "<pre>";
+//
+//        var_dump( $requestArray['order']['items'] );
+//
+//        var_dump( $requestArray['order']['amount'] );
+
+
+        $result = ['amount' => $requestArray['order']['amount'],
+            'orderItems' => $requestArray['order']['items']
+        ];
+
+//
+//        var_dump( $result );
+//
+//        echo "</pre>";
+
+         return $result;
+    }
+
+
 
     private function prepareAmount($amount = 0) {
         return (int)round($amount * 100);
@@ -168,14 +192,19 @@ class NetsCheckoutService
 
             $paymentId = $result->getTransactionId();
 
-            $data = json_encode($this->orderRowsOperation($amount, 'item1'));
+
+            if($amount == $payment->getAmountAuthorized()) {
+                $itemsJson = $payment->getItemsJson();
+                $res = $this->getOrderItemsFromPayment($itemsJson);
+                $data = json_encode($res);
+
+            } else {
+                $data = json_encode($this->orderRowsOperation($amount, 'item1'));
+            }
 
             $this->apiService->setAuthorizationKey($this->getAuthorizationKey());
 
-            error_log('nearly start charging payment');
             $result = $this->apiService->chargePayment($paymentId, $data);
-            error_log(' end....');
-
 
             $payment->setAmountCaptured( $payment->getAmountCaptured() + $amount);
 
