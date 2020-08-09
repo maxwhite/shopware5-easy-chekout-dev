@@ -49,7 +49,6 @@ class NetsCheckoutService
     public function createPayment(string $data) {
         $this->client->setHeader('commercePlatformTag:', 'easy_shopify_inject');
         $url = $this->getCreatePaymentUrl();
-        //$this->client->post($url, $data);
         return $this->handleResponse($this->client->post($url, $data));
     }
 

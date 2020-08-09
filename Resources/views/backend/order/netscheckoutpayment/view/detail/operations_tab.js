@@ -15,10 +15,6 @@ Ext.define('Shopware.apps.Order.netscheckoutpayment.view.detail.OperationsTab',
         snippets: {
             title: '{s name=order/tab/title}Nets Checkout{/s}',
             captureButtonText: '{s name=order/capture_button/text}Capture{/s}',
-            cancelButtonText: '{s name=order/cancel_button/text}Cancel Payment{/s}',
-            refundButtonText: '{s name=order/refund_button/text}Refund{/s}',
-            reloadButtonText: '{s name=order/reload_button/text}Reload{/s}',
-            gridTitle: '{s name=order/grid/title}Payment History{/s}',
         },
 
         initComponent: function() {

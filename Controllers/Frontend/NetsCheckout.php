@@ -3,8 +3,6 @@
 use NetsCheckoutPayment\Models\NetsCheckoutPayment;
 use Shopware\Components\CSRFWhitelistAware;
 use NetsCheckoutPayment\Components\Api\Exception\EasyApiException;
-
-use Shopware\Models\Order\Order;
 use Shopware\Models\Order\Status;
 use function Shopware;
 
@@ -25,42 +23,22 @@ class Shopware_Controllers_Frontend_NetsCheckout extends Shopware_Controllers_Fr
 
     public function indexAction() {
 
+        if(empty($this->getBasket())) {
+             return $this->redirect(['controller' => 'checkout', 'action' => 'confirm']);
+        }
 
-        /** @var  $order Shopware\Models\Order\Order */
-        $order = Shopware()->Models()->getRepository(Order::class)->findOneBy(['id' => 56]);
-
-        /** @var  $status \Shopware\Models\Order\Status */
-        $status = $order->getPaymentStatus();
-
-
-        //$status->setId(12);
-
-        $status->setName('completely_paid');
-
-        $order->setPaymentStatus($status);
-
-
-        Shopware()->Models()->persist($order);
-        Shopware()->Models()->flush();
-
-
-        echo get_class($order);
-
-
-
-
-
-        exit;
         try {
             $payment = $this->service->createPayment($this->session->offsetGet('sUserId'), $this->getBasket(), $this->session->offsetGet('sessionId'));
             $order = json_decode( $payment, true );
             $language = Shopware()->Config()->getByNamespace('NetsCheckoutPayment', 'language');
             $this->persistBasket();
-            return $this->redirect( $order['hostedPaymentPageUrl'] . '&language=' . $language );
+            $this->redirect( $order['hostedPaymentPageUrl'] . '&language=' . $language );
         }  catch (EasyApiException $e) {
-
-            echo $e->getMessage();
-            exit;
+            // TODO add flash message
+            /** @var  $logger Shopware\Components\Logger */
+            $logger = $this->get('pluginlogger');
+            $logger->error($e->getMessage());
+            $this->redirect(['controller' => 'checkout', 'action' => 'confirm']);
         }
     }
 
@@ -78,7 +56,6 @@ class Shopware_Controllers_Frontend_NetsCheckout extends Shopware_Controllers_Fr
 
         /** @var  $payment  \NetsCheckoutPayment\Components\Api\Payment */
         $payment = $checkoutApiService->getPayment($this->request->get('paymentid'));
-
 
         if($payment->getReservedAmount() || $payment->getPaymentMethod()) {
             $paymentId = $this->request->get('paymentid');
@@ -104,14 +81,11 @@ class Shopware_Controllers_Frontend_NetsCheckout extends Shopware_Controllers_Fr
                     Shopware()->Models()->flush($paymentModel);
 
                 $this->redirect(['controller' => 'checkout', 'action' => 'finish', 'sUniqueID' => $this->request->get('paymentid')]);
-                return;
             } else {
                 $this->redirect(['controller' => 'checkout', 'action' => 'confirm']);
-                return;
             }
         } else {
             $this->redirect(['controller' => 'checkout', 'action' => 'confirm']);
-            return;
         }
     }
 

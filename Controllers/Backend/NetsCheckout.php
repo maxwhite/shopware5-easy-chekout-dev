@@ -5,7 +5,6 @@ use function Shopware;
 
 class Shopware_Controllers_Backend_NetsCheckout  extends Shopware_Controllers_Backend_Application {
 
-
     protected $model = NetsCheckoutPayment::class;
 
     public function getpaymentAction() {
@@ -27,22 +26,11 @@ class Shopware_Controllers_Backend_NetsCheckout  extends Shopware_Controllers_Ba
         $this->View()->assign($params);
     }
 
-
     public function captureAction() {
-
       $orderId = $this->Request()->get('id');;
-
       /** @var $service \NetsCheckoutPayment\Components\NetsCheckoutService */
       $service = $this->get('nets_checkout.checkout_service');
-
-      //$service->getOrderItemsFromPayment();
-
-
       $amountToCharge = str_replace(',', '.', $this->Request()->get('amountAuthorized')) * 100;
-
-        error_log( gettype( $amountToCharge ) );
-
-      //exit;
 
       try {
           $service->chargePayment($orderId, $amountToCharge);

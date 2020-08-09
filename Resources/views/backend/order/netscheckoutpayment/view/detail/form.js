@@ -33,29 +33,11 @@ Ext.define('Shopware.apps.Order.netscheckoutpayment.view.detail.form',
         initComponent:function()
         {
             var me = this;
-
             var store = Ext.getStore('Shopware.apps.Order.netscheckoutpayment.store.Payment');
-
             me.items = [
                 me.createDetailsContainer(),
             ];
-
-            console.log('initComponent form');
-
-            console.log( store );
-
             me.callParent(arguments);
-        },
-
-        /**
-         *
-         */
-        registerEvents: function()
-        {
-            this.addEvents(
-                'confirmOperation',
-                'cancelOperation'
-            );
         },
 
         /**

@@ -9,12 +9,6 @@ Ext.define('Shopware.apps.Order.netscheckoutpayment.controller.NetsController',
     showOrder: function(record) {
         var me = this;
         me.callParent(arguments);
-
-        console.log('show oreder action');
-
-
-
-
     }
 
 });
