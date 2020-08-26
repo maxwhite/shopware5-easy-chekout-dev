@@ -59,7 +59,7 @@ class Shopware_Controllers_Frontend_NetsCheckout extends Shopware_Controllers_Fr
 
         if($payment->getReservedAmount() || $payment->getPaymentMethod()) {
             $paymentId = $this->request->get('paymentid');
-            $orderNumber = $this->saveOrder(($this->request->get('paymentid')), $paymentId, Status::PAYMENT_STATE_OPEN);
+            $orderNumber = $this->saveOrder(($this->request->get('paymentid')), $paymentId, Status::PAYMENT_STATE_RESERVED);
 
             if($orderNumber) {
                     // update reference from temporary to real orderid through Nets api
